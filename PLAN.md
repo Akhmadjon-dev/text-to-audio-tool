@@ -187,19 +187,19 @@ Goal: works fully offline after first load.
 - [ ] `P3-7` Manual offline test — **user QA step** (airplane-mode reload); config verified
 - [x] `P3-8` Privacy banner ("documents never leave your device") — landing + settings
 
-### Phase 4 — Kokoro Neural TTS + Audio Export (3–4 days)
+### Phase 4 — Kokoro Neural TTS + Audio Export ✅ DONE
 Goal: optional high-quality voice + downloadable audio.
 
-- [ ] `P4-1` `tts.worker.ts` — load Kokoro via transformers.js/kokoro-js off main thread
-- [ ] `P4-2` `KokoroProvider` implementing `TTSProvider`
-- [ ] `P4-3` First-run model download UX (progress bar, size warning, cancel)
-- [ ] `P4-4` Cache model in IndexedDB; instant subsequent loads
-- [ ] `P4-5` WebGPU detection → GPU path, CPU fallback
-- [ ] `P4-6` Engine switcher in settings (Web Speech ↔ Kokoro) + capability notes
-- [ ] `P4-7` Stream Kokoro audio buffers to Web Audio playback
-- [ ] `P4-8` Audio export to WAV (per chunk concat → single file)
-- [ ] `P4-9` Optional MP3 export (lamejs) — feature-flagged
-- [ ] `P4-10` Verify Kokoro path works fully offline after model cached
+- [x] `P4-1` `tts.worker.ts` — load Kokoro via kokoro-js/transformers.js off main thread
+- [x] `P4-2` `KokoroProvider` implementing `TTSProvider`
+- [x] `P4-3` First-run model download UX (progress bar + size note) _(cancel: future)_
+- [x] `P4-4` Cache model (transformers.js Cache Storage); instant subsequent loads
+- [x] `P4-5` WebGPU detection → GPU path, wasm fallback
+- [x] `P4-6` Engine switcher in settings (Browser ↔ Kokoro) + capability notes
+- [x] `P4-7` Stream Kokoro audio buffers to Web Audio playback
+- [x] `P4-8` Audio export to WAV (per chunk concat → single file)
+- [x] `P4-9` MP3 export (lamejs) — unit tested
+- [ ] `P4-10` Verify Kokoro offline after cache — **user QA** (needs browser + first-load network)
 
 ### Phase 5 — Robustness, A11y, Mobile, Polish (2–3 days)
 - [ ] `P5-1` Error boundary + user-friendly error toasts (no stack traces)
