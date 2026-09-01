@@ -22,16 +22,16 @@ export interface ReadingProgress {
   updatedAt: number;
 }
 
-export type ThemeMode = 'light' | 'dark' | 'system';
 export type TTSEngine = 'browser' | 'kokoro';
 
+// Note: theme is managed separately (features/settings/theme.ts) via localStorage
+// so it can be applied synchronously before first paint (no flash).
 export interface Settings {
   engine: TTSEngine;
   voiceId: string | null;
   lang: string | null;
   rate: number; // 0.5 – 3
   skipSeconds: number;
-  theme: ThemeMode;
   highlightSentence: boolean;
   fontScale: number;
 }
@@ -42,7 +42,6 @@ export const DEFAULT_SETTINGS: Settings = {
   lang: null,
   rate: 1,
   skipSeconds: 10,
-  theme: 'system',
   highlightSentence: true,
   fontScale: 1,
 };

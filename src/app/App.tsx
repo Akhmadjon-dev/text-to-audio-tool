@@ -4,9 +4,13 @@ import { getStoredTheme, setTheme, type ThemeMode } from '@/features/settings/th
 import { useDocumentStore } from '@/store/useDocumentStore';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { restoreLastDocument } from '@/features/documents/persistence';
+import { getProgress } from '@/services/storage/db';
+import type { DocumentRecord } from '@/types';
 import { TextInput } from '@/components/upload/TextInput';
 import { FileDrop } from '@/components/upload/FileDrop';
+import { RecentDocuments } from '@/components/documents/RecentDocuments';
 import { ReaderScreen } from '@/components/reader/ReaderScreen';
+import { SettingsPanel } from '@/components/settings/SettingsPanel';
 
 function ThemeToggle() {
   const [mode, setMode] = useState<ThemeMode>(() => getStoredTheme());
@@ -30,12 +34,18 @@ function ThemeToggle() {
 
 export default function App() {
   const online = useOnlineStatus();
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const document = useDocumentStore((s) => s.document);
   const chunks = useDocumentStore((s) => s.chunks);
   const setFromText = useDocumentStore((s) => s.setFromText);
   const setDocument = useDocumentStore((s) => s.setDocument);
   const clear = useDocumentStore((s) => s.clear);
   const hydrate = useSettingsStore((s) => s.hydrate);
+
+  const openDocument = async (doc: DocumentRecord) => {
+    const progress = await getProgress(doc.id);
+    setDocument(doc, progress?.chunkIndex ?? 0);
+  };
 
   // Load persisted settings once on mount.
   useEffect(() => {
@@ -93,8 +103,19 @@ export default function App() {
             {online ? 'Online' : 'Offline'}
           </span>
           <ThemeToggle />
+          <button
+            type="button"
+            onClick={() => setSettingsOpen(true)}
+            aria-label="Settings"
+            title="Settings"
+            className="rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+          >
+            ⚙️
+          </button>
         </div>
       </header>
+
+      <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
       {hasDocument ? (
         <ReaderScreen document={document} chunks={chunks} />
@@ -122,6 +143,8 @@ export default function App() {
           </div>
 
           <TextInput onSubmit={(text) => setFromText(text)} />
+
+          <RecentDocuments onOpen={(doc) => void openDocument(doc)} />
 
           <p className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-500">
             <span aria-hidden>🔒</span>

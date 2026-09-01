@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { DEFAULT_SETTINGS, type Settings } from '@/types';
 import { loadSettings, saveSettings } from '@/services/storage/db';
-import { applyTheme } from '@/features/settings/theme';
 
 const SETTINGS_KEYS = Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[];
 
@@ -25,12 +24,10 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     const stored = await loadSettings();
     if (stored) set({ ...stored });
     set({ hydrated: true });
-    applyTheme(get().theme);
   },
 
   update: (patch) => {
     set(patch);
     void saveSettings(pickSettings(get()));
-    if (patch.theme) applyTheme(patch.theme);
   },
 }));
