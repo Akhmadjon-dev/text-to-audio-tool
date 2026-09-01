@@ -1,6 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import { getStoredTheme, setTheme, type ThemeMode } from '@/features/settings/theme';
+import { useDocumentStore } from '@/store/useDocumentStore';
+import { useSettingsStore } from '@/store/useSettingsStore';
+import { TextInput } from '@/components/upload/TextInput';
+import { ReaderScreen } from '@/components/reader/ReaderScreen';
 
 function ThemeToggle() {
   const [mode, setMode] = useState<ThemeMode>(() => getStoredTheme());
@@ -12,6 +16,7 @@ function ThemeToggle() {
   const label = mode === 'light' ? '☀️ Light' : mode === 'dark' ? '🌙 Dark' : '🖥️ System';
   return (
     <button
+      type="button"
       onClick={cycle}
       className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
       aria-label={`Theme: ${mode}. Click to change.`}
@@ -23,17 +28,43 @@ function ThemeToggle() {
 
 export default function App() {
   const online = useOnlineStatus();
+  const document = useDocumentStore((s) => s.document);
+  const chunks = useDocumentStore((s) => s.chunks);
+  const setFromText = useDocumentStore((s) => s.setFromText);
+  const clear = useDocumentStore((s) => s.clear);
+  const hydrate = useSettingsStore((s) => s.hydrate);
+
+  // Load persisted settings once on mount.
+  useEffect(() => {
+    void hydrate();
+  }, [hydrate]);
+
+  const hasDocument = document !== null && chunks.length > 0;
 
   return (
     <div className="flex h-full flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <header className="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-        <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={hasDocument ? clear : undefined}
+          className="flex items-center gap-2"
+          aria-label={hasDocument ? 'Back to start' : 'Local Reader'}
+        >
           <span className="text-xl" aria-hidden>
             📖
           </span>
           <h1 className="text-lg font-semibold tracking-tight">Local Reader</h1>
-        </div>
+        </button>
         <div className="flex items-center gap-2">
+          {hasDocument && (
+            <button
+              type="button"
+              onClick={clear}
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+            >
+              ＋ New
+            </button>
+          )}
           <span
             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
               online
@@ -51,30 +82,31 @@ export default function App() {
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
-        <div className="text-5xl" aria-hidden>
-          🎧
-        </div>
-        <div className="space-y-2">
-          <h2 className="text-2xl font-bold">Turn any PDF or text into audio</h2>
-          <p className="max-w-md text-slate-600 dark:text-slate-400">
-            Paste text or drop a PDF and listen — while you work, exercise, or commute. Everything
-            runs on your device.
+      {hasDocument ? (
+        <ReaderScreen document={document} chunks={chunks} />
+      ) : (
+        <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
+          <div className="text-5xl" aria-hidden>
+            🎧
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold">Turn any text into audio</h2>
+            <p className="max-w-md text-slate-600 dark:text-slate-400">
+              Paste text and listen — while you work, exercise, or commute. Everything runs on your
+              device.
+            </p>
+          </div>
+
+          <TextInput onSubmit={(text) => setFromText(text)} />
+
+          <p className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-500">
+            <span aria-hidden>🔒</span>
+            Your text stays on your device. Nothing is uploaded to a server.
           </p>
-        </div>
+        </main>
+      )}
 
-        <div className="w-full rounded-2xl border-2 border-dashed border-slate-300 bg-white p-10 text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
-          <p className="font-medium">Upload &amp; playback coming in the next build.</p>
-          <p className="mt-1 text-sm">Phase 0 scaffold — PWA shell is live.</p>
-        </div>
-
-        <p className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-500">
-          <span aria-hidden>🔒</span>
-          Your documents stay on your device. Nothing is uploaded to a server.
-        </p>
-      </main>
-
-      <footer className="border-t border-slate-200 px-4 py-3 text-center text-xs text-slate-400 dark:border-slate-800 dark:text-slate-600">
+      <footer className="border-t border-slate-200 px-4 py-2 text-center text-xs text-slate-400 dark:border-slate-800 dark:text-slate-600">
         Local Reader — offline-first · no account · no tracking
       </footer>
     </div>

@@ -39,6 +39,9 @@ export function usePlayback() {
     controller.load(chunks);
   }, [controller, chunks]);
 
+  // Stop speech when the player leaves the screen.
+  useEffect(() => () => controller.stop(), [controller]);
+
   const state = useSyncExternalStore(
     useCallback((cb) => controller.subscribe(cb), [controller]),
     () => controller.getState(),
@@ -76,3 +79,5 @@ export function usePlayback() {
     skipBack,
   };
 }
+
+export type PlaybackApi = ReturnType<typeof usePlayback>;
