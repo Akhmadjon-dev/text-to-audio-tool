@@ -175,17 +175,17 @@ Goal: drop a PDF → clean readable text → same player.
 - [x] `P2-10` Multi-page + large-PDF incremental handling
 - [x] `P2-11` Reader view renders extracted doc (text rendered safely by React)
 
-### Phase 3 — Offline / PWA Hardening (1–2 days)
+### Phase 3 — Offline / PWA Hardening ✅ DONE
 Goal: works fully offline after first load.
 
-- [ ] `P3-1` Workbox precache app shell (JS/CSS/fonts/icons)
-- [ ] `P3-2` Runtime cache strategy for PDF.js worker + assets
-- [ ] `P3-3` Offline fallback UI + online/offline status indicator
-- [ ] `P3-4` IndexedDB document library (list, open, delete)
-- [ ] `P3-5` Settings persistence (voice, speed, skip, theme, highlight)
-- [ ] `P3-6` "Clear all local data" button (wipes IndexedDB + caches)
-- [ ] `P3-7` Manual offline test: online load → airplane mode → reload → paste text → TTS works
-- [ ] `P3-8` Privacy banner ("documents never leave your device")
+- [x] `P3-1` Workbox precache app shell (JS/CSS/icons; no external fonts loaded)
+- [x] `P3-2` Precache PDF.js worker (.mjs) + assets
+- [x] `P3-3` Offline fallback (navigateFallback) + online/offline status indicator
+- [x] `P3-4` IndexedDB document library (list, open, delete)
+- [x] `P3-5` Settings persistence (voice, speed, skip, highlight, font; theme via localStorage)
+- [x] `P3-6` "Clear all local data" button (wipes IndexedDB + Cache Storage)
+- [ ] `P3-7` Manual offline test — **user QA step** (airplane-mode reload); config verified
+- [x] `P3-8` Privacy banner ("documents never leave your device") — landing + settings
 
 ### Phase 4 — Kokoro Neural TTS + Audio Export (3–4 days)
 Goal: optional high-quality voice + downloadable audio.
