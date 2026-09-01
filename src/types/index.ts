@@ -27,7 +27,7 @@ export type TTSEngine = 'browser' | 'kokoro';
 
 export interface Settings {
   engine: TTSEngine;
-  voiceURI: string | null;
+  voiceId: string | null;
   lang: string | null;
   rate: number; // 0.5 – 3
   skipSeconds: number;
@@ -38,7 +38,7 @@ export interface Settings {
 
 export const DEFAULT_SETTINGS: Settings = {
   engine: 'browser',
-  voiceURI: null,
+  voiceId: null,
   lang: null,
   rate: 1,
   skipSeconds: 10,
