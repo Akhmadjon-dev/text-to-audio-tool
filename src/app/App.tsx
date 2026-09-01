@@ -3,6 +3,7 @@ import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import { getStoredTheme, setTheme, type ThemeMode } from '@/features/settings/theme';
 import { useDocumentStore } from '@/store/useDocumentStore';
 import { useSettingsStore } from '@/store/useSettingsStore';
+import { restoreLastDocument } from '@/features/documents/persistence';
 import { TextInput } from '@/components/upload/TextInput';
 import { ReaderScreen } from '@/components/reader/ReaderScreen';
 
@@ -31,6 +32,7 @@ export default function App() {
   const document = useDocumentStore((s) => s.document);
   const chunks = useDocumentStore((s) => s.chunks);
   const setFromText = useDocumentStore((s) => s.setFromText);
+  const setDocument = useDocumentStore((s) => s.setDocument);
   const clear = useDocumentStore((s) => s.clear);
   const hydrate = useSettingsStore((s) => s.hydrate);
 
@@ -38,6 +40,17 @@ export default function App() {
   useEffect(() => {
     void hydrate();
   }, [hydrate]);
+
+  // Restore the last opened document + reading position (continue where stopped).
+  useEffect(() => {
+    let active = true;
+    void restoreLastDocument().then((r) => {
+      if (active && r) setDocument(r.document, r.chunkIndex);
+    });
+    return () => {
+      active = false;
+    };
+  }, [setDocument]);
 
   const hasDocument = document !== null && chunks.length > 0;
 

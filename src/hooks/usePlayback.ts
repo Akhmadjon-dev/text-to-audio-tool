@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { PlaybackController } from '@/features/playback/PlaybackController';
 import { getProvider } from '@/services/tts';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { useDocumentStore } from '@/store/useDocumentStore';
+import { persistProgress } from '@/features/documents/persistence';
 
 /**
  * React binding for the PlaybackController. Wires the active document's chunks
@@ -16,6 +17,8 @@ export function usePlayback() {
   const rate = useSettingsStore((s) => s.rate);
   const skipSeconds = useSettingsStore((s) => s.skipSeconds);
   const chunks = useDocumentStore((s) => s.chunks);
+  const startIndex = useDocumentStore((s) => s.startIndex);
+  const docId = useDocumentStore((s) => s.document?.id ?? null);
 
   const provider = useMemo(() => getProvider(engine), [engine]);
 
@@ -34,10 +37,10 @@ export function usePlayback() {
     controller.setOptions({ voiceId, lang, rate });
   }, [controller, voiceId, lang, rate]);
 
-  // Load new chunks when the active document changes.
+  // Load new chunks when the active document changes, resuming at the saved index.
   useEffect(() => {
-    controller.load(chunks);
-  }, [controller, chunks]);
+    controller.load(chunks, startIndex);
+  }, [controller, chunks, startIndex]);
 
   // Stop speech when the player leaves the screen.
   useEffect(() => () => controller.stop(), [controller]);
@@ -45,6 +48,27 @@ export function usePlayback() {
   const state = useSyncExternalStore(
     useCallback((cb) => controller.subscribe(cb), [controller]),
     () => controller.getState(),
+  );
+
+  // Persist reading position (debounced) so "continue where you stopped" works.
+  const latest = useRef({ docId, index: state.currentIndex });
+  useEffect(() => {
+    latest.current = { docId, index: state.currentIndex };
+  }, [docId, state.currentIndex]);
+
+  useEffect(() => {
+    if (!docId) return;
+    const index = state.currentIndex;
+    const t = setTimeout(() => void persistProgress(docId, index), 1000);
+    return () => clearTimeout(t);
+  }, [docId, state.currentIndex]);
+
+  useEffect(
+    () => () => {
+      const { docId: id, index } = latest.current;
+      if (id) void persistProgress(id, index);
+    },
+    [],
   );
 
   const play = useCallback(() => controller.play(), [controller]);
