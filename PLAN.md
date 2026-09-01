@@ -201,25 +201,28 @@ Goal: optional high-quality voice + downloadable audio.
 - [x] `P4-9` MP3 export (lamejs) — unit tested
 - [ ] `P4-10` Verify Kokoro offline after cache — **user QA** (needs browser + first-load network)
 
-### Phase 5 — Robustness, A11y, Mobile, Polish (2–3 days)
-- [ ] `P5-1` Error boundary + user-friendly error toasts (no stack traces)
-- [ ] `P5-2` Handle: no voices, TTS failure, unsupported browser, memory limits
-- [ ] `P5-3` Keyboard nav + ARIA labels + visible focus + reduced-motion
-- [ ] `P5-4` Mobile layout: large touch targets, responsive player
-- [ ] `P5-5` Document mobile limits (iOS gesture, background playback)
-- [ ] `P5-6` Sleep timer (bonus, easy win)
-- [ ] `P5-7` Virtualized reader for very large docs
-- [ ] `P5-8` Memory cleanup (release buffers, cancel queues on unmount)
+### Phase 5 — Robustness, A11y, Mobile, Polish ✅ DONE
+- [x] `P5-1` Error boundary (no stack traces); inline errors for upload/export
+- [x] `P5-2` Handle: no voices, TTS failure/retry, unsupported browser banner
+- [x] `P5-3` Keyboard shortcuts + ARIA labels + focus rings + reduced-motion
+- [x] `P5-4` Mobile layout: 44px+ touch targets, responsive flex-wrap player
+- [x] `P5-5` Document mobile limits (iOS gesture, background) — in README
+- [x] `P5-6` Sleep timer (5–60 min)
+- [x] `P5-7` Virtualized reader (content-visibility) for very large docs
+- [x] `P5-8` Memory cleanup (cancel speech, PDF page cleanup, stop audio nodes)
 
-### Phase 6 — Testing & Docs (2 days)  _(unit tests only — per locked decision)_
-- [ ] `P6-1` Unit: chunker, sentence split, text cleaner, header/footer strip
-- [ ] `P6-2` Unit: TTS queue sequencing, pause/resume, error recovery
-- [ ] `P6-3` Unit: storage read/write/clear, settings persistence
-- [ ] `P6-4` Unit: PDF text normalization / paragraph reconstruction helpers
-- [ ] `P6-5` Performance report (10/50/100-page PDF + large text)
-- [ ] `P6-6` Browser compatibility matrix
-- [ ] `P6-7` `README.md` + `ARCHITECTURE.md` (diagrams, decisions, limits)
-- [ ] _Deferred to V2:_ Playwright E2E (paste→play, PDF→play) + headless offline verification
+### Phase 6 — Testing & Docs ✅ DONE  _(unit tests only — per locked decision)_
+- [x] `P6-1` Unit: chunker, sentence split, text cleaner, header/footer strip
+- [x] `P6-2` Unit: TTS queue sequencing, pause/resume, error recovery
+- [x] `P6-3` Unit: storage read/write/clear, settings persistence, document store
+- [x] `P6-4` Unit: PDF text helpers; WAV/MP3 encoders; filename/time/lang utils
+- [x] `P6-5` Performance notes (README) — real device numbers are QA
+- [x] `P6-6` Browser compatibility matrix (README)
+- [x] `P6-7` `README.md` + `ARCHITECTURE.md` (diagrams, decisions, limits)
+- [ ] _Deferred to V2:_ Playwright E2E + headless offline verification
+
+**Test suite:** 73 unit tests across 12 files (text pipeline, playback controller,
+storage, audio encoders, PDF text, utils).
 
 ---
 
