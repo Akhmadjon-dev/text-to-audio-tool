@@ -5,6 +5,7 @@ import { useDocumentStore } from '@/store/useDocumentStore';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { restoreLastDocument } from '@/features/documents/persistence';
 import { TextInput } from '@/components/upload/TextInput';
+import { FileDrop } from '@/components/upload/FileDrop';
 import { ReaderScreen } from '@/components/reader/ReaderScreen';
 
 function ThemeToggle() {
@@ -103,18 +104,28 @@ export default function App() {
             🎧
           </div>
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold">Turn any text into audio</h2>
+            <h2 className="text-2xl font-bold">Turn any PDF or text into audio</h2>
             <p className="max-w-md text-slate-600 dark:text-slate-400">
-              Paste text and listen — while you work, exercise, or commute. Everything runs on your
-              device.
+              Drop a PDF or paste text and listen — while you work, exercise, or commute. Everything
+              runs on your device.
             </p>
+          </div>
+
+          <FileDrop
+            onExtracted={(text, title) => setFromText(text, { title, source: 'pdf' })}
+          />
+
+          <div className="flex w-full max-w-2xl items-center gap-3 text-xs font-medium text-slate-400 dark:text-slate-600">
+            <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+            OR
+            <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
           </div>
 
           <TextInput onSubmit={(text) => setFromText(text)} />
 
           <p className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-500">
             <span aria-hidden>🔒</span>
-            Your text stays on your device. Nothing is uploaded to a server.
+            Your documents stay on your device. Nothing is uploaded to a server.
           </p>
         </main>
       )}

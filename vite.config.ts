@@ -37,7 +37,7 @@ export default defineConfig({
       workbox: {
         // App shell precache. Large TTS model is loaded from CDN + cached in
         // IndexedDB by transformers.js, so it is intentionally NOT precached here.
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globPatterns: ['**/*.{js,mjs,css,html,svg,png,woff2}'],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
