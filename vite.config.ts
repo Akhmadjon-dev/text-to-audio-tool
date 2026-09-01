@@ -55,4 +55,9 @@ export default defineConfig({
   worker: {
     format: 'es',
   },
+  build: {
+    // The Kokoro worker (transformers.js + onnxruntime-web) is a large but
+    // lazily-loaded chunk; don't warn about it.
+    chunkSizeWarningLimit: 3000,
+  },
 });

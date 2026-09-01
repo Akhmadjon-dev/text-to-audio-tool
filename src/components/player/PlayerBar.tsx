@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { IconButton } from '@/components/common/IconButton';
 import { SpeedControl } from './SpeedControl';
 import { VoicePicker } from './VoicePicker';
+import { ExportButton } from './ExportButton';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { useVoices } from '@/hooks/useVoices';
 import { getProvider } from '@/services/tts';
@@ -21,6 +22,7 @@ export function PlayerBar({ playback, skipSeconds }: PlayerBarProps) {
 
   const provider = useMemo(() => getProvider(engine), [engine]);
   const { groups, loading } = useVoices(provider);
+  const canExport = provider.capabilities.canExport;
 
   const { status, currentIndex, totalChunks, elapsedSeconds, totalSeconds, isPlaying } = playback;
   const maxIndex = Math.max(0, totalChunks - 1);
@@ -87,7 +89,8 @@ export function PlayerBar({ playback, skipSeconds }: PlayerBarProps) {
               onChange={(id, lang) => update({ voiceId: id, lang })}
             />
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
+            {canExport && totalChunks > 0 && <ExportButton />}
             <IconButton
               label="Restart from beginning"
               onClick={playback.restart}

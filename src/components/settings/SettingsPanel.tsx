@@ -5,7 +5,10 @@ import { VoicePicker } from '@/components/player/VoicePicker';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { useVoices } from '@/hooks/useVoices';
 import { useDocumentLibrary } from '@/hooks/useDocumentLibrary';
-import { getProvider } from '@/services/tts';
+import { useKokoroStatus } from '@/hooks/useKokoroStatus';
+import { getProvider, kokoroProvider } from '@/services/tts';
+import { DEFAULT_KOKORO_VOICE } from '@/services/tts/kokoroVoices';
+import type { TTSEngine } from '@/types';
 import { getStoredTheme, setTheme, type ThemeMode } from '@/features/settings/theme';
 import { wipeAllLocalData } from '@/features/settings/reset';
 
@@ -53,9 +56,20 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
   const provider = useMemo(() => getProvider(engine), [engine]);
   const { groups, loading } = useVoices(provider);
   const { docs } = useDocumentLibrary();
+  const kokoro = useKokoroStatus();
 
   const [theme, setThemeState] = useState<ThemeMode>(() => getStoredTheme());
   const [confirmWipe, setConfirmWipe] = useState(false);
+
+  const switchEngine = (next: TTSEngine) => {
+    if (next === engine) return;
+    if (next === 'kokoro') {
+      update({ engine: 'kokoro', voiceId: DEFAULT_KOKORO_VOICE, lang: 'en-US' });
+      void kokoroProvider.ensureLoaded();
+    } else {
+      update({ engine: 'browser', voiceId: null, lang: null });
+    }
+  };
 
   const onWipe = async () => {
     await wipeAllLocalData();
@@ -64,6 +78,55 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
 
   return (
     <Drawer open={open} onClose={onClose} title="Settings">
+      <Section title="Voice engine">
+        <div className="grid grid-cols-2 gap-2">
+          {(
+            [
+              { id: 'browser' as const, label: 'Browser', note: 'Instant · offline' },
+              { id: 'kokoro' as const, label: 'Neural', note: 'Higher quality · export' },
+            ]
+          ).map((e) => (
+            <button
+              key={e.id}
+              type="button"
+              onClick={() => switchEngine(e.id)}
+              className={`rounded-xl border p-3 text-left transition ${
+                engine === e.id
+                  ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/30'
+                  : 'border-slate-200 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'
+              }`}
+            >
+              <span className="block text-sm font-semibold text-slate-800 dark:text-slate-100">
+                {e.label}
+              </span>
+              <span className="block text-xs text-slate-500 dark:text-slate-400">{e.note}</span>
+            </button>
+          ))}
+        </div>
+        {engine === 'kokoro' && (
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            The neural voice downloads a one-time model (~86&nbsp;MB) from a public CDN, then works
+            offline. Enables audio download.
+          </p>
+        )}
+        {engine === 'kokoro' && kokoro.phase === 'loading' && (
+          <div aria-live="polite">
+            <div className="mb-1 text-xs text-slate-500 dark:text-slate-400">{kokoro.message}</div>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+              <div
+                className="h-full rounded-full bg-brand-600 transition-all"
+                style={{ width: `${Math.max(5, Math.round(kokoro.progress * 100))}%` }}
+              />
+            </div>
+          </div>
+        )}
+        {engine === 'kokoro' && kokoro.phase === 'error' && (
+          <p className="text-xs text-amber-600 dark:text-amber-400">
+            Couldn’t load the neural voice ({kokoro.message}). You can switch back to Browser.
+          </p>
+        )}
+      </Section>
+
       <Section title="Playback">
         <Row label="Voice">
           <VoicePicker
