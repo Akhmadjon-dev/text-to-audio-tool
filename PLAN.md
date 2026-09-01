@@ -211,16 +211,15 @@ Goal: optional high-quality voice + downloadable audio.
 - [ ] `P5-7` Virtualized reader for very large docs
 - [ ] `P5-8` Memory cleanup (release buffers, cancel queues on unmount)
 
-### Phase 6 — Testing & Docs (2 days)
+### Phase 6 — Testing & Docs (2 days)  _(unit tests only — per locked decision)_
 - [ ] `P6-1` Unit: chunker, sentence split, text cleaner, header/footer strip
 - [ ] `P6-2` Unit: TTS queue sequencing, pause/resume, error recovery
 - [ ] `P6-3` Unit: storage read/write/clear, settings persistence
-- [ ] `P6-4` Component: player controls, voice picker, upload
-- [ ] `P6-5` E2E (Playwright): paste → play; PDF → extract → play
-- [ ] `P6-6` E2E offline: load → offline → reload → still works
-- [ ] `P6-7` Performance report (10/50/100-page PDF + large text)
-- [ ] `P6-8` Browser compatibility matrix
-- [ ] `P6-9` `README.md` + `ARCHITECTURE.md` (diagrams, decisions, limits)
+- [ ] `P6-4` Unit: PDF text normalization / paragraph reconstruction helpers
+- [ ] `P6-5` Performance report (10/50/100-page PDF + large text)
+- [ ] `P6-6` Browser compatibility matrix
+- [ ] `P6-7` `README.md` + `ARCHITECTURE.md` (diagrams, decisions, limits)
+- [ ] _Deferred to V2:_ Playwright E2E (paste→play, PDF→play) + headless offline verification
 
 ---
 
@@ -250,8 +249,16 @@ Ship M1–M4 first (a genuinely useful free app). M5 is the differentiator. M6 m
 
 ---
 
-## 7. Open Decisions (defaults chosen, change anytime)
-- **Default engine:** Web Speech API (instant). Kokoro is opt-in. ✅
+## 7. Locked Decisions
+- **Scope:** Build all 6 milestones end-to-end in one autonomous run; only stop at the end (or if truly blocked). ✅
+- **Execution:** Strictly sequential — one task at a time, feature-by-feature commits on `dev`. ✅
+- **Neural TTS:** Include Kokoro-82M (opt-in). Default engine remains Web Speech API (instant). ✅
+- **Audio export:** WAV **and** MP3 (MP3 via lamejs). ✅
+- **Testing:** Unit tests only (Vitest) — chunker, cleaner, TTS queue, storage. No Playwright E2E for now. ✅
 - **Model host:** HuggingFace/jsDelivr CDN, cached to IndexedDB (keeps Vercel bandwidth free). ✅
-- **PDF size cap for MVP:** ~50 MB / 300 pages with a soft warning. ✅
-- **MP3 export:** feature-flagged behind WAV (ships later). ✅
+- **PDF size cap:** ~50 MB / 300 pages with a soft warning. ✅
+- **Git flow:** Commits authored as the user (no AI attribution); work on `dev`; merge `dev`→`main` via git at each milestone (no PR). ✅
+
+### User-side steps (cannot be automated here)
+- Import the repo on Vercel once to get the live URL (every push then auto-deploys).
+- Final real-device QA (iOS/Android browsers, installed PWA, live offline test).
