@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Local Reader">
+  <rect width="512" height="512" rx="112" fill="#0f766e" />
+  <g fill="none" stroke="#ecfeff" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+    <!-- open book -->
+    <path d="M256 168c-34-26-80-30-120-24v168c40-6 86-2 120 24 34-26 80-30 120-24V144c-40-6-86-2-120 24z" fill="#ecfeff" fill-opacity="0.12" />
+    <path d="M256 168v192" />
+  </g>
+  <!-- sound waves -->
+  <g fill="none" stroke="#5eead4" stroke-width="22" stroke-linecap="round">
+    <path d="M360 214c22 24 22 60 0 84" />
+    <path d="M396 190c40 40 40 92 0 132" />
+  </g>
+</svg>
