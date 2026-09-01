@@ -141,24 +141,24 @@ Goal: empty app deploys to Vercel and installs as a PWA.
 - [ ] `P0-7` Push to the repo you create, connect Vercel, confirm first deploy is green
 - [ ] `P0-8` Verify "Install app" prompt appears + basic offline shell loads
 
-### Phase 1 — Text Input + Web Speech TTS (MVP core) (2–3 days)
+### Phase 1 — Text Input + Web Speech TTS (MVP core) ✅ DONE
 Goal: paste text → hear it, with real controls. Ships useful value fast.
 
-- [ ] `P1-1` `TTSProvider` interface (speak/pause/resume/stop/seek, events, voices)
-- [ ] `P1-2` `BrowserSpeechProvider` (async voice loading via `onvoiceschanged`)
-- [ ] `P1-3` `useVoices` hook — dynamic voice list grouped by language
-- [ ] `P1-4` Text cleaner util (whitespace normalize, dashes, quotes)
-- [ ] `P1-5` Sentence splitter + chunker (≤200–250 chars, never break words)
-- [ ] `P1-6` TTS queue orchestrator (auto-advance, recover on error, track index)
-- [ ] `P1-7` Paste/text input component
-- [ ] `P1-8` Player bar: play / pause / resume / stop
-- [ ] `P1-9` Skip ±10s (chunk-relative) + restart
-- [ ] `P1-10` Speed control (0.5×–3× presets + custom)
-- [ ] `P1-11` Voice + language picker (persisted)
-- [ ] `P1-12` Sentence-level highlight synced to current chunk
-- [ ] `P1-13` Progress indicator (chunk N / total, approx time)
-- [ ] `P1-14` Persist current document + reading position to IndexedDB
-- [ ] `P1-15` "Continue where you stopped" on reload
+- [x] `P1-1` `TTSProvider` interface (speak/pause/resume/stop/seek, events, voices)
+- [x] `P1-2` `BrowserSpeechProvider` (async voice loading via `onvoiceschanged`)
+- [x] `P1-3` `useVoices` hook — dynamic voice list grouped by language
+- [x] `P1-4` Text cleaner util (whitespace normalize, dashes, quotes)
+- [x] `P1-5` Sentence splitter + chunker (≤200–250 chars, never break words)
+- [x] `P1-6` TTS queue orchestrator (auto-advance, recover on error, track index)
+- [x] `P1-7` Paste/text input component
+- [x] `P1-8` Player bar: play / pause / resume / stop
+- [x] `P1-9` Skip ±10s (chunk-relative) + restart
+- [x] `P1-10` Speed control (0.5×–3× presets + custom)
+- [x] `P1-11` Voice + language picker (persisted)
+- [x] `P1-12` Sentence-level highlight synced to current chunk
+- [x] `P1-13` Progress indicator (chunk N / total, approx time)
+- [x] `P1-14` Persist current document + reading position to IndexedDB
+- [x] `P1-15` "Continue where you stopped" on reload
 
 ### Phase 2 — PDF Pipeline (2–3 days)
 Goal: drop a PDF → clean readable text → same player.
