@@ -160,20 +160,20 @@ Goal: paste text → hear it, with real controls. Ships useful value fast.
 - [x] `P1-14` Persist current document + reading position to IndexedDB
 - [x] `P1-15` "Continue where you stopped" on reload
 
-### Phase 2 — PDF Pipeline (2–3 days)
+### Phase 2 — PDF Pipeline ✅ DONE
 Goal: drop a PDF → clean readable text → same player.
 
-- [ ] `P2-1` Integrate `pdfjs-dist` with worker
-- [ ] `P2-2` `pdf.worker.ts` — extract text page by page (non-blocking)
-- [ ] `P2-3` File validation (type, size limit, friendly errors)
-- [ ] `P2-4` Drag & drop + file picker upload UI + progress
-- [ ] `P2-5` Paragraph reconstruction from PDF text items
-- [ ] `P2-6` Header/footer + page-number stripping (repeated-line detection)
-- [ ] `P2-7` Hyphenation fix (join `word-\nbreak`)
-- [ ] `P2-8` Detect image-only/scanned pages → clear "OCR required" message
-- [ ] `P2-9` Handle empty / no-text-extracted PDFs gracefully
-- [ ] `P2-10` Multi-page + large-PDF incremental handling
-- [ ] `P2-11` Reader view renders extracted doc (sanitized, virtualized if long)
+- [x] `P2-1` Integrate `pdfjs-dist` with worker
+- [x] `P2-2` Extract text page by page (PDF.js worker + yielding, non-blocking)
+- [x] `P2-3` File validation (type, size limit, friendly errors)
+- [x] `P2-4` Drag & drop + file picker upload UI + progress
+- [x] `P2-5` Paragraph reconstruction from PDF text items (geometry-based)
+- [x] `P2-6` Header/footer + page-number stripping (repeated-line detection)
+- [x] `P2-7` Hyphenation fix (join `word-\nbreak`) — via cleanText
+- [x] `P2-8` Detect image-only/scanned pages → clear "OCR required" message
+- [x] `P2-9` Handle empty / no-text-extracted PDFs gracefully
+- [x] `P2-10` Multi-page + large-PDF incremental handling
+- [x] `P2-11` Reader view renders extracted doc (text rendered safely by React)
 
 ### Phase 3 — Offline / PWA Hardening (1–2 days)
 Goal: works fully offline after first load.
