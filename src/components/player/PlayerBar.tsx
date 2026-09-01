@@ -5,6 +5,7 @@ import { VoicePicker } from './VoicePicker';
 import { ExportButton } from './ExportButton';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { useVoices } from '@/hooks/useVoices';
+import { useSleepTimer } from '@/hooks/useSleepTimer';
 import { getProvider } from '@/services/tts';
 import { formatTime } from '@/utils/time';
 import type { PlaybackApi } from '@/hooks/usePlayback';
@@ -23,6 +24,7 @@ export function PlayerBar({ playback, skipSeconds }: PlayerBarProps) {
   const provider = useMemo(() => getProvider(engine), [engine]);
   const { groups, loading } = useVoices(provider);
   const canExport = provider.capabilities.canExport;
+  const sleep = useSleepTimer(playback.pause);
 
   const { status, currentIndex, totalChunks, elapsedSeconds, totalSeconds, isPlaying } = playback;
   const maxIndex = Math.max(0, totalChunks - 1);
@@ -88,6 +90,25 @@ export function PlayerBar({ playback, skipSeconds }: PlayerBarProps) {
               voiceId={voiceId}
               onChange={(id, lang) => update({ voiceId: id, lang })}
             />
+            <label className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-300">
+              <span className="sr-only">Sleep timer</span>
+              <span aria-hidden title="Sleep timer">
+                😴
+              </span>
+              <select
+                value={sleep.minutes}
+                onChange={(e) => sleep.setMinutes(Number(e.target.value))}
+                aria-label="Sleep timer"
+                className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 font-medium dark:border-slate-600 dark:bg-slate-800"
+              >
+                <option value={0}>Off</option>
+                {[5, 15, 30, 45, 60].map((m) => (
+                  <option key={m} value={m}>
+                    {m}m
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
           <div className="flex items-center gap-2">
             {canExport && totalChunks > 0 && <ExportButton />}

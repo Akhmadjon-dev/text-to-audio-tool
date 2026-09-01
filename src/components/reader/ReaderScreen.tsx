@@ -1,4 +1,5 @@
 import { usePlayback } from '@/hooks/usePlayback';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { ReaderView } from './ReaderView';
 import { PlayerBar } from '@/components/player/PlayerBar';
@@ -18,6 +19,14 @@ export function ReaderScreen({ document, chunks }: ReaderScreenProps) {
   const skipSeconds = useSettingsStore((s) => s.skipSeconds);
 
   const isActive = playback.status === 'playing' || playback.status === 'paused';
+
+  useKeyboardShortcuts({
+    toggle: playback.toggle,
+    skipBack: playback.skipBack,
+    skipForward: playback.skipForward,
+    prev: playback.prev,
+    next: playback.next,
+  });
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">

@@ -5,6 +5,7 @@ import { useDocumentStore } from '@/store/useDocumentStore';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { restoreLastDocument } from '@/features/documents/persistence';
 import { getProgress } from '@/services/storage/db';
+import { browserProvider, kokoroProvider } from '@/services/tts';
 import type { DocumentRecord } from '@/types';
 import { TextInput } from '@/components/upload/TextInput';
 import { FileDrop } from '@/components/upload/FileDrop';
@@ -64,6 +65,7 @@ export default function App() {
   }, [setDocument]);
 
   const hasDocument = document !== null && chunks.length > 0;
+  const noTts = !browserProvider.isSupported() && !kokoroProvider.isSupported();
 
   return (
     <div className="flex h-full flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
@@ -116,6 +118,15 @@ export default function App() {
       </header>
 
       <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+
+      {noTts && (
+        <div
+          role="alert"
+          className="bg-amber-100 px-4 py-2 text-center text-sm text-amber-800 dark:bg-amber-900/40 dark:text-amber-200"
+        >
+          Text-to-speech isn’t available in this browser. Try Chrome, Edge, or Safari.
+        </div>
+      )}
 
       {hasDocument ? (
         <ReaderScreen document={document} chunks={chunks} />
